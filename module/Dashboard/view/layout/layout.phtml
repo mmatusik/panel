@@ -1,0 +1,162 @@
+<?php echo $this->doctype(); ?>
+
+<html lang="pl">
+    <head>
+	<meta charset="utf-8">
+        <?php echo $this->headTitle('Rabatem '. $this->translate('Panel Administratora'))->setSeparator(' - ')->setAutoEscape(false) ?>
+	
+	<!-- Stylesheets -->
+	<link href='http://fonts.googleapis.com/css?family=Droid+Sans:400,700&subset=latin,latin-ext' rel='stylesheet'>
+	<link rel="stylesheet" href="css/style.css">
+        <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
+        <?php echo $this->headLink(array('rel' => 'shortcut icon', 'type' => 'image/vnd.microsoft.icon', 'href' => $this->basePath() . '/img/favicon(2).ico'))
+                        ->prependStylesheet($this->basePath() . '/css/style.css')->prependStylesheet($this->basePath() . '/stats/codebase/dhtmlxchart.css')?>
+        <?php echo $this->headScript()->prependFile($this->basePath() . '/js/script.js')->prependFile($this->basePath() . '/stats/codebase/dhtmlxchart.js')
+        ->prependFile($this->basePath() . '/stats/common/testdata.js')
+        ->prependFile($this->basePath() . '/js/jquery.tablesorter.js');
+        
+        ?>
+        
+	<!-- Optimize for mobile devices -->
+	<meta name="viewport" content="width=device-width, initial-scale=1.0"/>  
+        <script>
+        $(document).ready(function() { 
+            // call the tablesorter plugin 
+            $("table").tablesorter({ 
+                // sort on the first column and third column, order asc 
+                sortList: [[0,0],[2,0]] 
+            }); 
+        }); 
+        $("#options").tablesorter({sortList: [[0,0]], headers: { 3:{sorter: false}, 4:{sorter: false}}});
+	window.onload = function(){
+        var barChart =  new dhtmlXChart({
+            view:"bar",
+            container:"chartDiv",
+            value:"#sales#",
+            color:function(obj){
+                if (obj.sales > 60)
+                    return "#5d6677";
+                else
+                    return "#5d6677";
+            },
+            alpha:0.8,
+            radius:0,
+            border:true,
+            width:95,
+            xAxis:{
+                template:"#year#"
+            },
+            yAxis:{
+                start:0,
+                end:100,
+                step:10,
+                template:function(obj){
+                    return (obj%20?"":obj)
+                }
+            }
+        })
+        barChart.parse(dataset,"json");
+	}
+	</script>
+    </head>
+<body>    
+ 
+<!-- TOP BAR -->
+	<div id="top-bar">
+		
+		<div class="page-full-width cf">
+
+			<ul id="nav" class="fl">
+	
+				<li class="v-sep"><a href="<?php echo $this->url('dashboard') ?>" class="round button dark ic-left-arrow image-left"><?php echo $this->translate('Powrót na stronę główną') ?></a></li>
+				<li class="v-sep"><a href="#" class="round button dark menu-user image-left"><?php echo $this->translate('Zalogowany jako') ?> <strong><?php echo $this->user_session_login; ?></strong></a>
+					<ul>
+						<li><a href="#"><?php echo $this->translate('Mój profil') ?></a></li>
+						<li><a href="#"><?php echo $this->translate('Ustawienia użytkownika') ?></a></li>
+						<li><a href="#"><?php echo $this->translate('Zmień hasło') ?></a></li>
+						<li><a href="<?php echo $this->url('login', array('action'=>'logout', 'username' => $this->user_session_login, 'session' => $this->user_session_session));?>"><?php echo $this->translate('Wyloguj się') ?></a></li>
+					</ul> 
+				</li>
+			
+				<li><a href="#" class="round button dark menu-email-special image-left"><?php echo $this->translate('3 nowe wiadomości') ?></a></li>				
+				<li><a href="#" class="round button dark menu-log-special image-left"><?php echo $this->translate('6 nowych logów') ?></a></li>			                             
+                                <li><a href="<?php echo $this->url('login', array('action'=>'logout', 'username' => $this->user_session_login, 'session' => $this->user_session_session));?>" class="round button dark menu-logoff image-left"><?php echo $this->translate('Wyloguj się') ?></a></li>
+				
+			</ul> <!-- end nav -->
+
+					
+			<form action="#" method="POST" id="search-form" class="fr">
+				<fieldset>
+					<input type="text" id="search-keyword" class="round button dark ic-search image-right" placeholder="<?php echo $this->translate('Szukaj...') ?>" />
+					<input type="hidden" value="<?php echo $this->translate('Dalej') ?>" />
+				</fieldset>
+			</form>
+
+		</div> <!-- end full-width -->	
+	
+	</div> <!-- end top-bar -->
+	
+	
+	
+	<!-- HEADER -->
+	<div id="header-with-tabs">
+		
+		<div class="page-full-width cf">
+	
+
+			<!-- Change this image to your own company's logo -->
+			<!-- The logo will automatically be resized to 30px height. -->
+			<a href="#" id="company-branding-small" class="fr"><img src="img/rabatem.jpg" alt="Rabatem" /></a>
+			
+		</div> <!-- end full-width -->	
+
+	</div> <!-- end header -->
+	
+	
+	
+	<!-- MAIN CONTENT -->
+	<div id="content">
+		
+		<div class="page-full-width cf">
+                    <div class="container fl">     
+			<div class="side-menu">
+				
+				<h3><?php echo $this->translate('Dodawanie') ?></h3>
+				<ul>
+					<li><a href="<?php echo $this->url('offer', array('action'=>'add')); ?>"><?php echo $this->translate('Oferta') ?></a></li>
+					<li><a href="#"><?php echo $this->translate('Reklama') ?></a></li>
+					<li><a href="#"><?php echo $this->translate('Kategoria') ?></a></li>
+				</ul>
+				
+			</div> <!-- end side-menu -->
+                        
+                        <div class="side-menu">
+				
+				<h3><?php echo $this->translate('Inne') ?></h3>
+				<ul>
+					<li><a href="<?php echo $this->url('offer') ?>"><?php echo $this->translate('Lista ofert') ?></a></li>
+					<li><a href="#"><?php echo $this->translate('Lista reklam') ?></a></li>
+					<li><a href="#"><?php echo $this->translate('Lista kategorii') ?></a></li>
+                                        <li><a href="#"><?php echo $this->translate('Statystyki') ?></a></li>
+                                        <li><a href="#"><?php echo $this->translate('Ustawienia serwisu') ?></a></li>
+				</ul>
+				
+			</div> <!-- end side-menu -->
+                    </div>    
+			<div class="side-content fr">    
+
+<?php echo $this->content; ?>
+          <!-- /container -->
+        <?php echo $this->inlineScript() ?>
+          
+          
+          </div>
+		
+			</div> <!-- end side-content -->
+		
+		</div> <!-- end full-width -->
+			
+	</div> <!-- end content -->
+	
+	
+
